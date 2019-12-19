@@ -1,12 +1,12 @@
-
+import java.util.Arrays;
 /**
  * La clase encapsula en un array
  * una lista de numeros
  * 
- * @author - 
+ * @author - Jaione Echalecu
  * 
  */
-import java.util.Arrays;
+
 
 public class ListaNumeros 
 {
@@ -26,7 +26,8 @@ public class ListaNumeros
         if (n > TAM_LISTA) {
             throw new IllegalArgumentException("Valor no permitido para tamaño lista");
         }
-        // completar
+        pos = 0;
+        numeros = new int[n];
     }
 
     /**
@@ -37,9 +38,20 @@ public class ListaNumeros
      * asumimos que numero es >= 0 (no hay que comprobarlo)
      */
     public boolean addElemento(int numero)
-    {
-        
-        return true;
+    {   
+
+        if(pos < numeros.length){
+            for(int i = 0; i < numeros.length; i ++ ){
+                if(numeros[i] != numero || numero == 0){
+                    numeros[pos] = numero;
+                    pos++;
+                    return true;
+                }   else{
+                    return false;
+
+                }
+            }}
+        return false;
 
     }
 
@@ -48,7 +60,7 @@ public class ListaNumeros
      */
     public boolean estaCompleta()
     {
-        return true;
+        return pos >= numeros.length;
 
     }
 
@@ -57,7 +69,7 @@ public class ListaNumeros
      */
     public boolean estaVacia() 
     {
-        return true;
+        return pos == 0;
 
     }
 
@@ -66,7 +78,7 @@ public class ListaNumeros
      */
     public int getTotalNumeros()
     {
-        return 0;
+        return pos;
 
     }
 
@@ -74,8 +86,10 @@ public class ListaNumeros
      * Vacía la lista
      */
     public void vaciarLista() 
-    {
-        
+    { for(int i = 0; i < numeros.length; i++){
+            numeros[i] = 0;
+        }
+        pos = 0;
     }
 
     /**
@@ -84,7 +98,12 @@ public class ListaNumeros
      */
     public boolean estaElemento(int numero) 
     {
-        
+        for(int i = 0; i < numeros.length;i++){
+            if(numeros[i] == numero){
+                return true;
+            }
+
+        }
         return false;
     }
 
@@ -97,8 +116,16 @@ public class ListaNumeros
      */
     public String toString() 
     {
-        
-        return null;
+        String string = "";
+        int contador = 0;
+        while(contador < numeros.length){
+            string += "|"+ numeros[contador];
+            if (estaVacia()){
+                string = "| |";
+            }
+            contador++;
+        }
+        return string;
     }
 
     /**
@@ -122,9 +149,34 @@ public class ListaNumeros
      * (ver detalles en el enunciado)
      */
     public int[] expandir() {
-         
+        if(numeros.length %2 != 0 ) {
+            throw new RuntimeException("Nº impar de elementos en el array, añada uno más ");
 
-        return null;
+        }
+        else{
+            int suma = 0;
+            int p = 0;
+
+            while( p < numeros.length){
+
+                if (p %2 ==0){
+                    suma = suma + numeros[p];
+
+                }
+                p++;
+            }
+            int[] expandido = new int[suma];
+            int contador = 0;
+            for(int i = 0; i< numeros.length; i+=2){
+                for(int a = 0; a < numeros[i]; a++)
+                { expandido[contador] = numeros[i + 1];
+                    contador++;
+
+                }
+            }
+            return expandido;
+        } 
+
     }
 
     /**
@@ -145,11 +197,33 @@ public class ListaNumeros
      *  después de reorganizarParesImpares() quedaría {4, 2, 8, 3, 7, 9, 5, 11, 13}
      */
     public void reorganizarParesImpares() {
-         
+        int contador = pos;
+        int i = 0;
+        int par = 0;
+        int impar = pos - 1;
+        int auxiliar = 0;
+        while (i < contador){ 
+            if (numeros[i] % 2 == 0)
+            {
+                auxiliar = numeros[i];
+                numeros[i] = numeros[par];
+                numeros[par] = auxiliar;
 
+                par++;
+            } 
+            else if (numeros[i] % 2 != 0)
+            {
+                auxiliar = numeros[i];
+                numeros[i] = numeros[impar];
+                numeros[impar] = auxiliar;
+                impar--;
+                contador--;
+            }
+            i++;
+
+        }
     }
 
-     
     /**
      *  Usando métodos de la clase Arrays haz una copia 
      *  de numeros al tamaño indicado por su longitud lógica
@@ -158,8 +232,15 @@ public class ListaNumeros
      *  que incluya los elementos del array ordenado
      */
     public ListaNumeros nuevaLista() {
-         
-        return null;
+
+        int[] copia = Arrays.copyOf(numeros, pos);
+        Arrays.sort(copia);
+        ListaNumeros lista = new ListaNumeros(pos);
+        for (int i = 0; i < copia.length; i++)
+        {
+            lista.addElemento(copia[i]);
+        }
+        return lista;
 
     }
 
@@ -176,8 +257,20 @@ public class ListaNumeros
      */
     public int[][] toArray2D() 
     {
-        
-        return null;
+        int[][] matriz = new int[4][4];
+        int contador = 0;
+        int p = pos;
+        for (int i = 0; i < 4; i++)
+        {
+            for(int o = 0; o < 4; o++)
+            {   if (contador != p)
+                {
+                    matriz[i][o] = numeros[contador];
+                    contador++;
+                }
+            }            
+        }
+        return matriz;
     }
 
     /**
@@ -199,9 +292,9 @@ public class ListaNumeros
         System.out.println("Original: " + numeros.toString());
         int[] expandido = numeros.expandir();
         System.out.println("Expandido: " + Arrays.toString(expandido));
-        // seguir completando
-        
-        
-        
+        numeros.reorganizarParesImpares();
+        System.out.println("Organizado: " + numeros.toString());
+        System.out.println("Nueva Lista: " + numeros.nuevaLista());
+
     }
 }
